@@ -65,7 +65,7 @@ So, step 2 return 2 cases:
 1. `UpdateLastEndTimeAndAddNew`, which carries the update disconnection and the new disconnection instance.
 
 
-##@ Technical details
+## Technical details
 - I have disabled AoT because it just adds noise for this exercise.
 
 ## My conclusions
