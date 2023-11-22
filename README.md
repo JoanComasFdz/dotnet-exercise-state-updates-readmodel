@@ -67,3 +67,14 @@ So, step 2 return 2 cases:
 
 ## Technical details
 - I have disabled AoT because it just adds noise for this exercise.
+
+## My conclusions
+- I liked how the DetermineLogChanges ended up looking. It is quite self explanatory and clear. 
+Variable names may be unconventional but help understanding the why.
+- On the negative side, I wrote a comment before the last return because i realized it can be tricky
+ to understand what is the combination of last disconnection, its end time and the event state.
+ - Also, there is no way to know outside that method if all cases are being handled in the switch. I have tried
+ with an enum, but then the code gets cumbersome since the type information is duplicated and the swtich needs to cast
+ the `logChange` on every case.
+ - Maybe its because I am rusty, but I needed to check the switch a number of times because I had some bugs there. I am not
+ giving it a lot of importance,  but I need to keep this in mind.
