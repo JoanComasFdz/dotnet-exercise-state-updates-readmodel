@@ -31,6 +31,8 @@ app.MapPost("/", (HardwareConnectionStateChangedEvent e, DisconnectionsDBContext
             disconnectionOrDefault.EndTime = updateAndAdd.EndTime;
             db.Disconnections.Add(updateAndAdd.NewInstance);
             break;
+        default:
+            throw new NotImplementedException($"No handling found for log change {logChange}.");
     };
     db.SaveChanges();
 });
