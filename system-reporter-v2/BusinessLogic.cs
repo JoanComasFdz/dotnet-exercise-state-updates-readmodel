@@ -1,0 +1,51 @@
+﻿using hardware_connetion_monitor;
+using OneOf;
+
+namespace system_reporter_v2;
+
+internal static class BusinessLogic
+{
+    // Pure function, does not edit parameters, returns discriminated union
+    internal static OneOf<AddNew, UpdateLastEndTime, UpdateLastEndTimeAndAddNew> DetermineLogChanges(HardwareConnectionStateChangedEvent e, Disconnection? last)
+    {
+        if (last is null)
+        {
+            var becauseNoneExists = new Disconnection(e.HardwareUnitId, e.State, e.OccurredAt);
+            return new AddNew(becauseNoneExists);
+        }
+
+        if (last.EndTime is not null)
+        {
+            var becaseLastHasEndTime = new Disconnection(e.HardwareUnitId, e.State, e.OccurredAt);
+            return new AddNew(becaseLastHasEndTime);
+        }
+
+        if (e.State == HardwareConnectionState.CONNECTED)
+        {
+            return new UpdateLastEndTime(last, e.OccurredAt);
+        }
+
+        // Last exists and endtime is null and state is not CONNECTED
+        var newDisconnection = new Disconnection(e.HardwareUnitId, e.State, e.OccurredAt);
+        return new UpdateLastEndTimeAndAddNew(last, e.OccurredAt, newDisconnection);
+    }
+
+    internal sealed record AddNew(Disconnection newDisconnection)
+    {
+        public Disconnection Instance => newDisconnection;
+    }
+
+    internal sealed record UpdateLastEndTime(Disconnection last, DateTime endTime)
+    {
+        public Disconnection Last => last;
+        public DateTime EndTime => endTime;
+    }
+
+    internal sealed record UpdateLastEndTimeAndAddNew(Disconnection last, DateTime endTime, Disconnection newDisconnection)
+    {
+        public Disconnection Last => last;
+        public DateTime EndTime => endTime;
+        public Disconnection NewInstance => newDisconnection;
+    }
+}
+
