@@ -78,10 +78,23 @@ Variable names may be unconventional but help understanding the why.
  the `logChange` on every case.
  - Maybe its because I am rusty, but I needed to check the switch a number of times because I had some bugs there. I am not
  giving it a lot of importance,  but I need to keep this in mind.
+ - USing this functional approach also forces you to create very small classes which are actually integral part of the method.
+ this could be considered an unnecessary overhead by traditional OOP practicioners: *Why would I create extra types when I can simply
+ call the DbContext here?* This is valid criticism, so more effort has to be put into explaining the benefits. I will need to add
+ unit tests for the business logic to increase its justifiability.
 
  # Next: Use OneOf
  As of November 2023, [OneOf](https://github.com/mcintyre321/OneOf) is the default library to use when implementing discriminated unions.
 
-As a follow-up on the exercise, I will pack the current code in a v1 solution folder and will create a v2 solution folder, where
-I will replace the custom implementation of DU by the tools available in OneOf.
+As a follow-up on the exercise, I have renamed the current system-reporter to system-reporter-v1 and created a v2 project, where
+I replaced the custom implementation of DU by the tools available in OneOf.
  
+ ## Conclusions, v2
+- The DU types can be simplified since I no longer need to make them inherit from the same base.
+- It could be argue that the Last and the Instance properties could be moved to a single one in LogChange base class, but that would
+ decrease understandability because it would need a generic name that wont match either option.
+- OneOf provides a Switch method, which is the one that will give you the ability to know if you missed a type on coding and compile time.
+- This made me realized that I am passing the entity from DBContext into the business logic, so there is no need to get it again from DB,
+i can just return the `last` parameter as part of the result type when needed. Its `EndTime` can therefore be updated outseide in the switch
+and the changes will be made effective on `db.SaveChanges()`.
+- Overall is less code and more compact.
