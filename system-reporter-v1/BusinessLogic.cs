@@ -1,6 +1,6 @@
 ﻿using hardware_connetion_monitor;
 
-namespace system_reporter;
+namespace system_reporter_v1;
 
 internal static class BusinessLogic
 {

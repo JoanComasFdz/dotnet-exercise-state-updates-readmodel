@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace system_reporter;
+namespace system_reporter_v1;
 
 public class DisconnectionsDBContext(DbContextOptions<DisconnectionsDBContext> options) : DbContext(options)
 {

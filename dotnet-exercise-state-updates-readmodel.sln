@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34309.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "system-reporter", "system-reporter\system-reporter.csproj", "{745A00FB-3E31-4A7F-992B-9348A098AF20}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "system-reporter-v1", "system-reporter-v1\system-reporter-v1.csproj", "{745A00FB-3E31-4A7F-992B-9348A098AF20}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "hardware-connetion-monitor", "hardware-connetion-monitor\hardware-connetion-monitor.csproj", "{B13E3559-735E-4A10-B5A0-E4E25FD850F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "hardware-connetion-monitor", "hardware-connetion-monitor\hardware-connetion-monitor.csproj", "{B13E3559-735E-4A10-B5A0-E4E25FD850F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

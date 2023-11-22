@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using hardware_connetion_monitor;
-using system_reporter;
+using system_reporter_v1;
 
 var builder = WebApplication.CreateSlimBuilder(args);
 

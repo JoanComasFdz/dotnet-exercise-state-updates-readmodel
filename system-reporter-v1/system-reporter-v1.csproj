@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>system-reporter</RootNamespace>
+    <RootNamespace>system-reporter-v1</RootNamespace>
     <InvariantGlobalization>true</InvariantGlobalization>
     <PublishAot>false</PublishAot>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
