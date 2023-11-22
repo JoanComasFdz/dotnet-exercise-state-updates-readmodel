@@ -20,10 +20,10 @@ app.MapPost("/", (HardwareConnectionStateChangedEvent e, DisconnectionsDBContext
     var logChange = BusinessLogic.DetermineLogChanges(e, disconnectionOrDefault);
     logChange.Switch(
         addNew => db.Disconnections.Add(addNew.Instance),
-        update => update.last.EndTime = update.EndTime,
+        update => update.Last.EndTime = update.EndTime,
         updateAndAdd =>
         {
-            updateAndAdd.last.EndTime = updateAndAdd.EndTime;
+            updateAndAdd.Last.EndTime = updateAndAdd.EndTime;
             db.Disconnections.Add(updateAndAdd.NewInstance);
         }
         );

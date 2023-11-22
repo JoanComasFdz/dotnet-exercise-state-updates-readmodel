@@ -30,18 +30,18 @@ internal static class BusinessLogic
         return new UpdateLastEndTimeAndAddNew(last, e.OccurredAt, newDisconnection);
     }
 
-    internal sealed record AddNew(Disconnection newDisconnection)
+    internal sealed class AddNew(Disconnection newDisconnection)
     {
         public Disconnection Instance => newDisconnection;
     }
 
-    internal sealed record UpdateLastEndTime(Disconnection last, DateTime endTime)
+    internal sealed class UpdateLastEndTime(Disconnection last, DateTime endTime)
     {
         public Disconnection Last => last;
         public DateTime EndTime => endTime;
     }
 
-    internal sealed record UpdateLastEndTimeAndAddNew(Disconnection last, DateTime endTime, Disconnection newDisconnection)
+    internal sealed class UpdateLastEndTimeAndAddNew(Disconnection last, DateTime endTime, Disconnection newDisconnection)
     {
         public Disconnection Last => last;
         public DateTime EndTime => endTime;
