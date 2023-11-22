@@ -25,20 +25,14 @@ app.MapPost("/", (HardwareConnectionStateChangedEvent e, DisconnectionsDBContext
             db.Disconnections.Add(addNew.Instance);
             break;
         case BusinessLogic.UpdateLastEndTime update:
-            SetLastDisconnectionEndTime(db, update.HardwareUnitId, update.EndTime);
+            disconnectionOrDefault.EndTime = update.EndTime;
             break;
         case BusinessLogic.UpdateLastEndTimeAndAddNew updateAndAdd:
-            SetLastDisconnectionEndTime(db, updateAndAdd.HardwareUnitId, updateAndAdd.EndTime);
+            disconnectionOrDefault.EndTime = updateAndAdd.EndTime;
             db.Disconnections.Add(updateAndAdd.NewInstance);
             break;
     };
     db.SaveChanges();
-
-    void SetLastDisconnectionEndTime(DisconnectionsDBContext db, string hardwareUnitId, DateTime endTime)
-    {
-        var last = db.Disconnections.Last(d => d.HardwareUnitId == hardwareUnitId);
-        last.EndTime = endTime;
-    }
 });
 
 app.Run();
