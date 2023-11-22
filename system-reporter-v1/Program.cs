@@ -25,10 +25,10 @@ app.MapPost("/", (HardwareConnectionStateChangedEvent e, DisconnectionsDBContext
             db.Disconnections.Add(addNew.Instance);
             break;
         case BusinessLogic.UpdateLastEndTime update:
-            disconnectionOrDefault.EndTime = update.EndTime;
+            update.Last.EndTime = update.EndTime;
             break;
         case BusinessLogic.UpdateLastEndTimeAndAddNew updateAndAdd:
-            disconnectionOrDefault.EndTime = updateAndAdd.EndTime;
+            updateAndAdd.Last.EndTime = updateAndAdd.EndTime;
             db.Disconnections.Add(updateAndAdd.NewInstance);
             break;
         default:

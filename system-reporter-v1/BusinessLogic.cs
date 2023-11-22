@@ -21,32 +21,32 @@ internal static class BusinessLogic
 
         if (e.State == HardwareConnectionState.CONNECTED)
         {
-            return new UpdateLastEndTime(last.HardwareUnitId, e.OccurredAt);
+            return new UpdateLastEndTime(last, e.OccurredAt);
         }
 
         // Last exists and endtime is null and state is not CONNECTED
         var newDisconnection = new Disconnection(e.HardwareUnitId, e.State, e.OccurredAt);
-        return new UpdateLastEndTimeAndAddNew(last.HardwareUnitId, e.OccurredAt, newDisconnection);
+        return new UpdateLastEndTimeAndAddNew(last, e.OccurredAt, newDisconnection);
     }
 
-    internal abstract record LogChange
+    internal abstract class LogChange
     {
     }
 
-    internal sealed record AddNew(Disconnection newDisconnection) : LogChange
+    internal sealed class AddNew(Disconnection newDisconnection) : LogChange
     {
         public Disconnection Instance => newDisconnection;
     }
 
-    internal sealed record UpdateLastEndTime(string hardwareUnitId, DateTime endTime) : LogChange
+    internal sealed class UpdateLastEndTime(Disconnection last, DateTime endTime) : LogChange
     {
-        public string HardwareUnitId => hardwareUnitId;
+        public Disconnection Last => last;
         public DateTime EndTime => endTime;
     }
 
-    internal sealed record UpdateLastEndTimeAndAddNew(string hardwareUnitId, DateTime endTime, Disconnection newDisconnection) : LogChange
+    internal sealed class UpdateLastEndTimeAndAddNew(Disconnection last, DateTime endTime, Disconnection newDisconnection) : LogChange
     {
-        public string HardwareUnitId => hardwareUnitId;
+        public Disconnection Last => last;
         public DateTime EndTime => endTime;
         public Disconnection NewInstance => newDisconnection;
     }
