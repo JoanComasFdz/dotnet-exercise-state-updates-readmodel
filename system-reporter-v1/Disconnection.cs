@@ -8,7 +8,7 @@ public record Disconnection(string HardwareUnitId, HardwareConnectionState State
 {
     [JsonIgnore]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public string Id { get; init; } = string.Empty;
+    public string Id { get; init; }
 
     public DateTime? EndTime { get; set; }
 }
