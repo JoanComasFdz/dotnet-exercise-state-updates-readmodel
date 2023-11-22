@@ -65,7 +65,7 @@ So, step 2 return 2 cases:
 1. `UpdateLastEndTimeAndAddNew`, which carries the update disconnection and the new disconnection instance.
 
 
-## Technical details
+##@ Technical details
 - I have disabled AoT because it just adds noise for this exercise.
 
 ## My conclusions
@@ -78,3 +78,10 @@ Variable names may be unconventional but help understanding the why.
  the `logChange` on every case.
  - Maybe its because I am rusty, but I needed to check the switch a number of times because I had some bugs there. I am not
  giving it a lot of importance,  but I need to keep this in mind.
+
+ # Next: Use OneOf
+ As of November 2023, [OneOf](https://github.com/mcintyre321/OneOf) is the default library to use when implementing discriminated unions.
+
+As a follow-up on the exercise, I will pack the current code in a v1 solution folder and will create a v2 solution folder, where
+I will replace the custom implementation of DU by the tools available in OneOf.
+ 
