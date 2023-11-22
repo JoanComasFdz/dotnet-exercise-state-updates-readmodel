@@ -29,22 +29,22 @@ internal static class BusinessLogic
         return new UpdateLastEndTimeAndAddNew(last.HardwareUnitId, e.OccurredAt, newDisconnection);
     }
 
-    internal abstract class LogChange
+    internal abstract record LogChange
     {
     }
 
-    internal sealed class AddNew(Disconnection newDisconnection) : LogChange
+    internal sealed record AddNew(Disconnection newDisconnection) : LogChange
     {
         public Disconnection Instance => newDisconnection;
     }
 
-    internal sealed class UpdateLastEndTime(string hardwareUnitId, DateTime endTime) : LogChange
+    internal sealed record UpdateLastEndTime(string hardwareUnitId, DateTime endTime) : LogChange
     {
         public string HardwareUnitId => hardwareUnitId;
         public DateTime EndTime => endTime;
     }
 
-    internal sealed class UpdateLastEndTimeAndAddNew(string hardwareUnitId, DateTime endTime, Disconnection newDisconnection) : LogChange
+    internal sealed record UpdateLastEndTimeAndAddNew(string hardwareUnitId, DateTime endTime, Disconnection newDisconnection) : LogChange
     {
         public string HardwareUnitId => hardwareUnitId;
         public DateTime EndTime => endTime;
