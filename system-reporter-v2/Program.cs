@@ -18,6 +18,7 @@ app.MapPost("/", (HardwareConnectionStateChangedEvent e, DisconnectionsDBContext
     var disconnectionOrDefault = db.Disconnections.LastOrDefault(d => d.HardwareUnitId == e.HardwareUnitId);
 
     var logChange = BusinessLogic.DetermineLogChanges(e, disconnectionOrDefault);
+
     logChange.Switch(
         addNew => db.Disconnections.Add(addNew.Instance),
         update => update.Last.EndTime = update.EndTime,
@@ -25,8 +26,7 @@ app.MapPost("/", (HardwareConnectionStateChangedEvent e, DisconnectionsDBContext
         {
             updateAndAdd.Last.EndTime = updateAndAdd.EndTime;
             db.Disconnections.Add(updateAndAdd.NewInstance);
-        }
-        );
+        });
     db.SaveChanges();
 });
 

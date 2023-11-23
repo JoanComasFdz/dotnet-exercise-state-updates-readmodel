@@ -8,6 +8,8 @@ Do not critizie its architecture based on how would you have implemented it.
 
 I will create also a traditional OOP implementation to be able to properly compare both approaches.
 
+I consider traditional OOP to include SOLID principles.
+
 ## The functionality
 The `hardware-connetion-monitor` service monitors the state of the connection to a hardware unit. When that
 connection state changes, it publishes it with the hardware unit id, the new state and the current datetime.
@@ -124,3 +126,64 @@ I replaced the custom implementation of DU by the tools available in OneOf.
 i can just return the `last` parameter as part of the result type when needed. Its `EndTime` can therefore be updated outseide in the switch
 and the changes will be made effective on `db.SaveChanges()`.
 - Overall is less code and more compact.
+
+---
+
+# Sumary
+I am going to count the files and lines of code to compare both approaches, so the following items are common in both solutions and won't be counted:
+ - Disconnection
+ - DisconnectionDBContext
+ - Program
+
+### OOP
+Production code items:
+- ILogService => Not necessary, 1:1 interface, 4 lines
+- LogService => Not necessary, but facilitates testability, 33 lines.
+- IDisconnectionRepository => not necessary for prod, but for testing, 6 lines.
+- DisconnctionRepository => overkill with pass-through methods and less performant unless details are leaked, 22 lines.
+ Total: 65 lines.
+
+Code in controller:
+- MapPost() becomes a pass-through method, 1 line. Good if you fvor hexagonal architecture, doesn't reduce complexity otherwise.
+- MapPost(2) forces integration tests for ASP .NET Core but gets rid of 78 lines in exchange for 22 lines in the method.
+  
+Tests:
+- Requires mocking framework to test business logic.
+- First test requires 2 lines for instantiation and 1 line to assert the `repo.GetLast...()` is called.
+- Second test requires additiinal 2 lines for repo setup.
+
+Total lines needed: 
+1. 1 (`MapPost()`) + 65 (items) + 13 (Test1) + 20 (Test2) = 99.
+2. 22 (`MapPost()`) + 13 (Test1) + 20 (Test2) = 55.
+
+### Functional (v2)
+Production code items:
+- BusinessLogic => no way to ensure parameters are inmutable (for now), 23 lines
+- AddNew => very small "result" type, 4 lines
+- UpdateLastEndTime => very small "result" type, 5 lines
+- UpdateLastEndTimeAndAddNew => very small "result" type, 6 lines
+Total: 38 lines.
+
+Code in controller:
+- MapPost() handles data persistency optimizing calls to `db.SaveChanges()`, doesn't fit hexagonal architecture, 12 lines.
+
+Tests:
+- No additional packages to test the business logic.
+- First test => 10 lines.
+- Second test => 16 lines.
+
+Total lines needed:
+11 (`MapPost()`) + 38 (items) + 10 (Test1) + 16 (Test2) = 75.
+
+
+## TL;DR (when working with (small?) services)
+
+Traditional OOP:
+- Requires shallow classes and 1:1 interfaces that don't bring much value, they are there only to adhere to a particular architecture.
+- It can be underperformant unless one class leaks details to another, thus violating SOLID.
+- There is a way to reduce that complexity, at the cost of having to write integration tests. This is not a big deal nowadays, but it feels wrong to bootstrap the whole service to test some functionality.
+
+Functional:
+- Requires an extra library for Discriminated Unions to work but it gets rid of shallow classes and 1:1 interfaces.
+- Requires 25% less code (99 to 75 lines) and none of the items are required by external factors (like testability).
+- Testing business logic does not require an extra library nor any setuo beyond what the method needs.

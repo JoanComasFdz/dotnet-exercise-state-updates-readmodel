@@ -12,9 +12,7 @@ namespace system_reporter_oop.Tests
             var expectedState = HardwareConnectionState.DISCONNECTED;
             var expectedStartTime = DateTime.Now;
             var e = new HardwareConnectionStateChangedEvent(expectedHardwarUnitId, expectedState, expectedStartTime);
-
             var repo = Substitute.For<IDisconnectionRespository>();
-
             var sut = new LogService(repo);
 
             sut.UpdateLog(e);
@@ -34,7 +32,6 @@ namespace system_reporter_oop.Tests
             var expectedState = HardwareConnectionState.DISCONNECTED;
             var expectedStartTime = DateTime.Now;
             var e = new HardwareConnectionStateChangedEvent(expectedHardwarUnitId, expectedState, expectedStartTime);
-
             var yesterday = DateTime.Now.Subtract(TimeSpan.FromDays(1));
             var last = new Disconnection(expectedHardwarUnitId, HardwareConnectionState.WAITING, yesterday)
             {
@@ -44,7 +41,6 @@ namespace system_reporter_oop.Tests
             var repo = Substitute.For<IDisconnectionRespository>();
             repo.GetLastByHardwareUnitId(expectedHardwarUnitId)
                 .Returns(last);
-
             var sut = new LogService(repo);
             sut.UpdateLog(e);
 

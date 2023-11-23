@@ -7,7 +7,6 @@ public interface IDisconnectionRespository
     public void Add(Disconnection connection);
 
     public void Update(Disconnection connection);
-
 }
 
 internal class DisconnectionRepository : IDisconnectionRespository
