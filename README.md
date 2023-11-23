@@ -6,6 +6,8 @@ recently, in a **functional** way.
 This is a simplification and an abstraction of the actual functionality, not the full picture.
 Do not critizie its architecture based on how would you have implemented it.
 
+I will create also a traditional OOP implementation to be able to properly compare both approaches.
+
 ## The functionality
 The `hardware-connetion-monitor` service monitors the state of the connection to a hardware unit. When that
 connection state changes, it publishes it with the hardware unit id, the new state and the current datetime.
@@ -33,8 +35,7 @@ The log is created as follows:
 - Since it is a read model, the Controller method to return the log will not do any complex SQL query nor any in memory
  operation, besides obtaining the data from the DB and returning it. No mapping, no Linq, no loops, no ifs.
 
-
-## My take
+## My take on how to implement it
 My goal is to create an impure-pure-impure sandwitch as follows:
 1. Query the DB
 2. Decide what to do
@@ -82,6 +83,31 @@ Variable names may be unconventional but help understanding the why.
  this could be considered an unnecessary overhead by traditional OOP practicioners: *Why would I create extra types when I can simply
  call the DbContext here?* This is valid criticism, so more effort has to be put into explaining the benefits. I will need to add
  unit tests for the business logic to increase its justifiability.
+- The traditional OOP implementation kinda forced me to create two seaprate variants for the MapPost:
+  - Alternative 1: This is not 100% equivalent to the functional approach, since there is no other code in the ontroller than delegating all to the `LogService`.
+One of the reasons is because then the `LogService` can be tested in isolation, matching how the functinal approach is tested.
+On the otherside, this is a 1:1 interface, meaning the LogUpdater itself could be injected, but most  SOLID enjoyers wouldn't like that,
+even though there would not make much of a difference. The fact that the controller MapPost method becomes just a pass-trough method can be considered an unnecessary
+indirection or layer, only necessary to avoid integration test for ASP .NET Core.
+  - Alternative 2: This is a more direct way to implement it, leaving all the code in the controller. It matches a bit better the functional
+approach because there is actual code handling the DBContext. On the negative side, the tests must be done using the integration tests approach
+for ASP .NET Core which is not as trivial as unit testing a class (even though its not that complex either).
+- When it comes to testing the `LogService`, the following things are necessary:
+  - A repository implementation to avoid having to use an InMemory DbContext (not a problem here since the DBContext is alreay in memory,
+  but important to note it anywhat because production code won't have InMemory DBContexts). This repository is an unnecessary abstraction layer
+  from a functionality point of view, but a requirement from a testing point of view. It is also a subpar solution, since for the case of
+  update and add it is less performant because `db.SaveChanges()` is called twice. A potential fix would be to add a method in the repository
+  to handle update and add, but then it begs the question: Should the repository really provide this functionality? If so, is the
+  `LogService` leaking its implementation details?. Additinally, I won't write unit tests for the repository because they will have no return of investment.
+  I know this may be a hot take, but what am I going to test? That Add adds the diconnection to the DbContext? This is so trivial.
+  - A mocking framework for the unit tests. This is not really a big thing since everybody assumes this is always needed, but its important to remark
+that it isn't necessary with the functional approach.
+  - Creating the expected and input data is not enough, the mocking framework has to be used to configure the repository with the returning values.
+  - In the OOP the coder MUST check that all the calls to the dependency are performed, and possibliy in a very particular order. It can be argued
+  that the test is documenting the behaviour of the SUT. And yet, it feels like forced duplication, almost policing: did the dev of this class
+  create a new isntance withouth checking if it already exist?
+
+
 
  # Next: Use OneOf
  As of November 2023, [OneOf](https://github.com/mcintyre321/OneOf) is the default library to use when implementing discriminated unions.
