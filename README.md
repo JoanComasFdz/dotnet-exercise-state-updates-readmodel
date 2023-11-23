@@ -111,8 +111,8 @@ that it isn't necessary with the functional approach.
 
 
 
- # Next: Use OneOf
- As of November 2023, [OneOf](https://github.com/mcintyre321/OneOf) is the default library to use when implementing discriminated unions.
+# Next: Use OneOf
+As of November 2023, [OneOf](https://github.com/mcintyre321/OneOf) is the default library to use when implementing discriminated unions.
 
 As a follow-up on the exercise, I have renamed the current system-reporter to system-reporter-v1 and created a v2 project, where
 I replaced the custom implementation of DU by the tools available in OneOf.
@@ -126,6 +126,28 @@ I replaced the custom implementation of DU by the tools available in OneOf.
 i can just return the `last` parameter as part of the result type when needed. Its `EndTime` can therefore be updated outseide in the switch
 and the changes will be made effective on `db.SaveChanges()`.
 - Overall is less code and more compact.
+
+
+# Next: High order functions
+The next follow-up is to invert the game: Replace discriminated unions by parameters of type `Actions<T>`, which will provide
+the necessary functionality to the pure function.
+
+This, in my opinion, implies changing the name of the function, since it no longer just determines something, but also calls
+the necessary labdas to make it happen.
+
+## Conclusions, v3
+- It is na interesting exercise, but generates too many second-guesses.
+- Readability of the `LogChanges` is more ore less the same, but when using only Funcs and Actions, a lot of information about how to use
+the params is lost. Because of that I created the delegates with proper documentation. So the DU types are replaced by delegates.
+- The testability of the `LogChanges` is decreased in my opinion, since "isCalled" and storage vars are needed just for the sake of checking
+what has been done and what has not been done. This is similar to the traditional OOP version.
+- The readability of the Controller, stays more or less the same once is written: its more compact but at the same time there are 4 lambdas
+using the DbContext and their parameters are not really descriptive since they are named individually. I considered following the apporach of
+"blablaBecauseOf" but that would create very long lambdas and all devs are used to short param names in lambdas.
+- The writability in the Controller is decreased, because the dev has to understand what the hell are those lambdas for. IntelliSense isn't 
+showing the XML documentation of the delegates so it does not help. A mitigation could be to declare the methods to be used in the lambdas...
+but then the Controller explodes, which is exactly what I am trying to avoid.
+- TL;DR I would **not** choose this approach for this particular use case.
 
 ---
 
@@ -145,7 +167,7 @@ Production code items:
 
 Code in controller:
 - MapPost() becomes a pass-through method, 1 line. Good if you fvor hexagonal architecture, doesn't reduce complexity otherwise.
-- MapPost(2) forces integration tests for ASP .NET Core but gets rid of 78 lines in exchange for 22 lines in the method.
+- MapPost(2) forces integration tests for ASP .NET Core but gets rid of 78 lines in exchange for 22 lines in the method and not respecting SOLID.
   
 Tests:
 - Requires mocking framework to test business logic.
@@ -187,3 +209,6 @@ Functional:
 - Requires an extra library for Discriminated Unions to work but it gets rid of shallow classes and 1:1 interfaces.
 - Requires 25% less code (99 to 75 lines) and none of the items are required by external factors (like testability).
 - Testing business logic does not require an extra library nor any setuo beyond what the method needs.
+
+We need to talk about SOLID.
+
