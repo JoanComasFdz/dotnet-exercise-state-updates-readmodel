@@ -20,16 +20,11 @@ internal class LogService : ILogService
     {
         var last = repo.GetLastByHardwareUnitId(e.HardwareUnitId);
 
-        if (last is null)
+        if (last is null || last.EndTime is not null)
         {
             var becauseNoneExists = new Disconnection(e.HardwareUnitId, e.State, e.OccurredAt);
             repo.Add(becauseNoneExists);
-        } else if (last.EndTime is not null)
-        {
-            var becaseLastHasEndTime = new Disconnection(e.HardwareUnitId, e.State, e.OccurredAt);
-            repo.Add(becaseLastHasEndTime);
-        }
-        else if (e.State == HardwareConnectionState.CONNECTED)
+        } else if (e.State == HardwareConnectionState.CONNECTED)
         {
             last.EndTime = e.OccurredAt;
             repo.Update(last);

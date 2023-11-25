@@ -17,9 +17,9 @@ var app = builder.Build();
 app.MapGet("/", (DisconnectionsDBContext db) => Results.Ok(db.Disconnections.ToArray()));
 
 // Alternative 1: 
-app.MapPost("/1", (HardwareConnectionStateChangedEvent e, LogService logUpdater) => 
+app.MapPost("/1", (HardwareConnectionStateChangedEvent e, ILogService logServie) => 
 {
-    logUpdater.UpdateLog(e);
+    logServie.UpdateLog(e);
 });
 
 // Alternative 2
