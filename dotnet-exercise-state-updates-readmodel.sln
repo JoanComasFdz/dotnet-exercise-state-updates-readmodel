@@ -15,9 +15,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "system-reporter-oop", "syst
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "system-reporter-oop.Tests", "system-reporter-oop.Tests\system-reporter-oop.Tests.csproj", "{0BC682D6-4E0D-4C14-B6BB-96D1B940EB51}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "system-reporter-v3", "system-reporter-v3\system-reporter-v3.csproj", "{4AC9B3C7-62DF-4BBE-9F68-3287D18530A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "system-reporter-v4", "system-reporter-v4\system-reporter-v4.csproj", "{4AC9B3C7-62DF-4BBE-9F68-3287D18530A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "system-reporter-v3.Tests", "system-reporter-v3.Tests\system-reporter-v3.Tests.csproj", "{B3FDFE2D-F30E-4480-AFB6-6CFE8C26313D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "system-reporter-v4.Tests", "system-reporter-v4.Tests\system-reporter-v4.Tests.csproj", "{B3FDFE2D-F30E-4480-AFB6-6CFE8C26313D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "system-reporter-v2.1", "system-reporter-v2.1\system-reporter-v2.1.csproj", "{5EA732D2-6B29-4D74-B622-A337B2DDF224}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +59,10 @@ Global
 		{B3FDFE2D-F30E-4480-AFB6-6CFE8C26313D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B3FDFE2D-F30E-4480-AFB6-6CFE8C26313D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B3FDFE2D-F30E-4480-AFB6-6CFE8C26313D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EA732D2-6B29-4D74-B622-A337B2DDF224}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EA732D2-6B29-4D74-B622-A337B2DDF224}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EA732D2-6B29-4D74-B622-A337B2DDF224}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EA732D2-6B29-4D74-B622-A337B2DDF224}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

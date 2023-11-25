@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using hardware_connetion_monitor;
-using system_reporter_v3;
+using system_reporter_v4;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 var builder = WebApplication.CreateSlimBuilder(args);

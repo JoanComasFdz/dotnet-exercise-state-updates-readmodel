@@ -1,10 +1,11 @@
 ﻿using hardware_connetion_monitor;
 
-namespace system_reporter_v3;
+namespace system_reporter_v4;
 
 internal static class BusinessLogic
 {
-    // Pure function, does not edit parameters, returns discriminated union
+    // Not Pure function anymore because it cannot xontrol that the lambdas won't have side effects.
+    // does not edit parameters
     internal static void LogChanges(
         HardwareConnectionStateChangedEvent e,
         GetLastDisconnectionByHardwareUnitIdFunc getLastDisconnectionByHardwareUnitId,
@@ -13,17 +14,10 @@ internal static class BusinessLogic
         UpdateLastEndTimeAndAddNewAction updateLastEndTimeAndAddNew)
     {
         var last = getLastDisconnectionByHardwareUnitId(e.HardwareUnitId);
-        if (last is null)
+        if (last is null || last.EndTime is not null)
         {
             var becauseNoneExists = new Disconnection(e.HardwareUnitId, e.State, e.OccurredAt);
             addNew(becauseNoneExists);
-            return;
-        }
-
-        if (last.EndTime is not null)
-        {
-            var becaseLastHasEndTime = new Disconnection(e.HardwareUnitId, e.State, e.OccurredAt);
-            addNew(becaseLastHasEndTime);
             return;
         }
 

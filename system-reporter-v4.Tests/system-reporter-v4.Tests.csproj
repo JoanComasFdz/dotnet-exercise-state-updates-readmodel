@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <RootNamespace>system_reporter_v3.Tests</RootNamespace>
+    <RootNamespace>system_reporter_v4.Tests</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
@@ -31,7 +31,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\hardware-connetion-monitor\hardware-connetion-monitor.csproj" />
-    <ProjectReference Include="..\system-reporter-v3\system-reporter-v3.csproj" />
+    <ProjectReference Include="..\system-reporter-v4\system-reporter-v4.csproj" />
   </ItemGroup>
 
 </Project>
