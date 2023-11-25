@@ -7,16 +7,10 @@ internal static class BusinessLogic
     // Pure function, does not edit parameters, returns discriminated union
     internal static LogChange DetermineLogChanges(HardwareConnectionStateChangedEvent e, Disconnection? last)
     {
-        if (last is null)
+        if (last is null || last.EndTime is not null)
         {
             var becauseNoneExists = new Disconnection(e.HardwareUnitId, e.State, e.OccurredAt);
             return new AddNew(becauseNoneExists);
-        }
-
-        if (last.EndTime is not null)
-        {
-            var becaseLastHasEndTime = new Disconnection(e.HardwareUnitId, e.State, e.OccurredAt);
-            return new AddNew(becaseLastHasEndTime);
         }
 
         if (e.State == HardwareConnectionState.CONNECTED)
