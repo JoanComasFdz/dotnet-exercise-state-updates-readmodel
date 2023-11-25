@@ -6,18 +6,14 @@ namespace system_reporter_v2;
 internal static class BusinessLogic
 {
     // Pure function, does not edit parameters, returns discriminated union
-    internal static OneOf<AddNew, UpdateLastEndTime, UpdateLastEndTimeAndAddNew> DetermineLogChanges(HardwareConnectionStateChangedEvent e, Disconnection? last)
+    internal static OneOf<AddNew, UpdateLastEndTime, UpdateLastEndTimeAndAddNew> DetermineLogChanges(
+        in HardwareConnectionStateChangedEvent e,
+        in Disconnection? last)
     {
-        if (last is null)
+        if (last is null || last.EndTime is not null)
         {
             var becauseNoneExists = new Disconnection(e.HardwareUnitId, e.State, e.OccurredAt);
             return new AddNew(becauseNoneExists);
-        }
-
-        if (last.EndTime is not null)
-        {
-            var becaseLastHasEndTime = new Disconnection(e.HardwareUnitId, e.State, e.OccurredAt);
-            return new AddNew(becaseLastHasEndTime);
         }
 
         if (e.State == HardwareConnectionState.CONNECTED)
