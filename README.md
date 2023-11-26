@@ -60,7 +60,8 @@ In this case, the actions are:
 1. Update the last disconnection end time to the event datetime.
 1. Add new disconnection with state `WAITING`, start time is the event datetime and end time is null.
 
-Finally, there is a case in which the log only has to update the end time of the last disconnection: When the last end time is null and the event state is `CONNECTED`.
+Finally, there is a case in which the log only has to update the end time of the last disconnection: When the last end time is null and the event 
+state is `CONNECTED`.
 
 So, step 2 return 2 cases:
 1. `AddNew`, which carries the new disconnection instance.
@@ -86,11 +87,11 @@ Variable names may be unconventional but help understanding the why.
  call the DbContext here?* This is valid criticism, so more effort has to be put into explaining the benefits. I will need to add
  unit tests for the business logic to increase its justifiability.
 - The traditional OOP implementation kinda forced me to create two seaprate variants for the MapPost:
-  - Alternative 1: This is not 100% equivalent to the functional approach, since there is no other code in the ontroller than delegating all to the `LogService`.
-One of the reasons is because then the `LogService` can be tested in isolation, matching how the functinal approach is tested.
+  - Alternative 1: This is not 100% equivalent to the functional approach, since there is no other code in the ontroller than delegating all to the
+ `LogService`. One of the reasons is because then the `LogService` can be tested in isolation, matching how the functinal approach is tested.
 On the otherside, this is a 1:1 interface, meaning the LogUpdater itself could be injected, but most  SOLID enjoyers wouldn't like that,
-even though there would not make much of a difference. The fact that the controller MapPost method becomes just a pass-trough method can be considered an unnecessary
-indirection or layer, only necessary to avoid integration test for ASP .NET Core.
+even though there would not make much of a difference. The fact that the controller MapPost method becomes just a pass-trough method can be 
+considered an unnecessary indirection or layer, only necessary to avoid integration test for ASP .NET Core.
   - Alternative 2: This is a more direct way to implement it, leaving all the code in the controller. It matches a bit better the functional
 approach because there is actual code handling the DBContext. On the negative side, the tests must be done using the integration tests approach
 for ASP .NET Core which is not as trivial as unit testing a class (even though its not that complex either).
@@ -100,8 +101,8 @@ for ASP .NET Core which is not as trivial as unit testing a class (even though i
   from a functionality point of view, but a requirement from a testing point of view. It is also a subpar solution, since for the case of
   update and add it is less performant because `db.SaveChanges()` is called twice. A potential fix would be to add a method in the repository
   to handle update and add, but then it begs the question: Should the repository really provide this functionality? If so, is the
-  `LogService` leaking its implementation details?. Additinally, I won't write unit tests for the repository because they will have no return of investment.
-  I know this may be a hot take, but what am I going to test? That Add adds the diconnection to the DbContext? This is so trivial.
+  `LogService` leaking its implementation details?. Additinally, I won't write unit tests for the repository because they will have no return of
+ investment. I know this may be a hot take, but what am I going to test? That Add adds the diconnection to the DbContext? This is so trivial.
   - A mocking framework for the unit tests. This is not really a big thing since everybody assumes this is always needed, but its important to remark
 that it isn't necessary with the functional approach.
   - Creating the expected and input data is not enough, the mocking framework has to be used to configure the repository with the returning values.
@@ -109,9 +110,7 @@ that it isn't necessary with the functional approach.
   that the test is documenting the behaviour of the SUT. And yet, it feels like forced duplication, almost policing: did the dev of this class
   create a new isntance withouth checking if it already exist?
 
-
-
-# Next: Use OneOf
+# Next: Use OneOf (v2)
 As of November 2023, [OneOf](https://github.com/mcintyre321/OneOf) is the default library to use when implementing discriminated unions.
 
 As a follow-up on the exercise, I have renamed the current system-reporter to system-reporter-v1 and created a v2 project, where
@@ -129,7 +128,7 @@ and the changes will be made effective on `db.SaveChanges()`.
 - Unit testing can be improved, `IsT0` doesn't mean anything.
 - How would stack traces look like if an exceptin happens in any of the lambdas in the `Switch()` method?
 
-# Next: v2 with pattern matching
+# Next: v2 with pattern matching (v3)
 After further learning, I can condense all the ifs into 3 pattern matching statements, to compare how it reads and feels compared to v2.
 
 ## Conclusions, v3
@@ -224,8 +223,10 @@ Total lines needed:
 
 Traditional OOP:
 - Requires shallow classes and 1:1 interfaces that don't bring much value, they are there only to adhere to a particular architecture.
-- It can be underperformant unless one class leaks details to another, thus potentially violating SOLID, although some engineeres would say that it doesn't violate it and that this is exactly what the Repository is supposed to do.
-- There is a way to reduce that complexity, at the cost of having to write integration tests. This is not a big deal nowadays, but it feels wrong to bootstrap the whole service to test some functionality.
+- It can be underperformant unless one class leaks details to another, thus potentially violating SOLID, although some engineeres would say that it 
+doesn't violate it and that this is exactly what the Repository is supposed to do.
+- There is a way to reduce that complexity, at the cost of having to write integration tests. This is not a big deal nowadays, but it feels wrong to
+ bootstrap the whole service to test some functionality.
 
 Functional:
 - Requires an extra library for Discriminated Unions to work
@@ -309,19 +310,17 @@ The `Controller` class is responssible fully handling the event.
 
 Functional does respect the single responsability principle.
 
-Also, nothing stops you from encapsulating the handling of the results of the `BusinessLogic` class into another class that contains the pattern matching,
-thus freeing the controller from that responsability.
-In that case the responsability of the controller would be: Orchestrating the components to update the log.
+Also, nothing stops you from encapsulating the handling of the results of the `BusinessLogic` class into another class that contains the pattern
+matching, thus freeing the controller from that responsability. In that case the responsability of the controller would be: Orchestrating the
+components to update the log.
 
 ### Open Close Principle
 > Software entities should be open for extension, but closed for modification
 [Wikipedia](https://en.wikipedia.org/wiki/Open–closed_principle)
 
-Discriminated unions do pose a challenge for extensibility, as adding a new type to the union will require modifying all functions that pattern match on that union.
-This seems to violate OCP as it stands.
-
-When a new type is added to a discriminated union, it's true that all the pattern matching code that handles the union will need to be revisited.
-This is a limitation of using discriminated unions, and it's a trade-off for the type safety and clarity they provide.
+Discriminated unions do pose a challenge for extensibility, as adding a new type to the union will require modifying all functions that pattern match
+on that union. This seems to violate OCP as it stands. This is a limitation of using discriminated unions, and it's a trade-off for the type safety 
+and clarity they provide.
 
 Extending functionality might impact consumers, but this is not unique to functional programming.
 
@@ -329,6 +328,70 @@ By isolating impure operations, you can change the core logic (pure functions) o
 how it interacts with the outside world.
 
 In this exercise, adding a new line, updating an existing one and updating previous + adding a new one may be enough for future functuionality.
-Even if a new case is handlerd (a new state for example) it most likely can be extended in the pure method without affecting the controller.
+Even if a new case appears (a new state for example) it most likely can be extended in the pure method without affecting the controller.
+
+What would break consumers is if a different action has to be done in the DB, say a delete, or adding multiple lines.
+This is not necessarily negative because:
+- Only 1 consumer is affected.
+- The change in the controller is trivial.
+- No extra unit tests are needed.
+- If Integration tests exist for the other cases, then they are needed for the new caseas anyway.
+- The whole change will be atomic.
+
+The OCP applies more naturally to object-oriented design, but functional programming emphasizes immutability, statelessness, ]
+and function composition, which offer their own kinds of flexibility and maintainability.
+
+In functional programming, the focus is often on building small, reusable, and composable pure functions. While this might 
+mean that certain structures like discriminated unions are less flexible than their OOP counterparts, the overall design
+of a functional program can still support a high degree of extensibility and modularity, albeit in a different way than
+prescribed by OCP.
+
+AS a follow-up, wold be great to understand how can this logic be implemented with smaller, reusable and composable functions.
+
 
 ### Liskov Substitution Principle
+> A class may be replaced by a sub-class without breaking the program.
+[Wikipedia](https://en.wikipedia.org/wiki/Liskov_substitution_principle)
+
+In OOP, LSP is often about subclassing and inheritance, whereas in FP, it's more about adhering to contracts defined by function signatures,
+type systems, or data structures.
+
+The key point here is **Substitutability**:
+
+- When a function expects a base type; it should be able to handle all subtypes of this base type. The function should work correctly regardless of 
+which subtype is passed as long as the subtype adheres to the contract of the base type.
+
+- Higher-order functions that take other functions as arguments should be able to accept any function matching the expected signature.
+This is similar to LSP in that a function can be replaced by another as long as it adheres to the expected input/output contract.
+
+- FP's emphasis on immutability and avoiding side effects naturally aligns with LSP. Functions and operations in FP typically don't alter the state, 
+which makes it easier to substitute one function or data type with another without unintended side effects.
+
+### Inversion of Control
+> A component may delegate a responsability to a different component that it can then call.
+(Myself, because the wikipedia page is far too generic)
+
+IoC in functional programming is less about frameworks taking control and more about how functions manage control flow, side effects, and dependencies.
+
+The key point here is **Delegation** (or SRP!):
+
+- In FP, higher-order functions are a natural form of IoC. You pass functions (logic) into other functions, which then call back into the logic you
+provided at the points they deem appropriate. This is a form of IoC where the control of when and how a certain piece of code executes is inverted 
+from the caller to the function being called.
+
+- Using callbacks or continuation-passing style (CPS) is another way IoC manifests in FP. Instead of a function returning a value directly, it calls 
+another function (a continuation) with the result, thus inverting the control over what happens after a computation is finished.
+
+### Dependency Injection
+> A component receives other components that it requires, as opposed to creating them internally.
+[Wikipedia](https://en.wikipedia.org/wiki/Dependency_injection)
+
+In FP, DI is typically about providing functions with the dependencies they need to perform their tasks, often without relying on complex DI frameworks.
+
+The simplest and most common form of DI in FP is passing dependencies directly as function arguments
+
+**Composition over Inheritance**: FP favors function composition over class inheritance. Dependencies are provided in a way that supports this 
+compositional approach.
+
+## TL;DR
+SOLID Principles still apply in FP, they are just implemented in a different way.
