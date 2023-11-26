@@ -299,4 +299,36 @@ If a query is complex, put that one in its own class with a more descriptive nam
 ## Now: SOLID
 How does the functional approach (v3) adhere to the SOLID principles?
 
-// I'm workig on it
+### Single Responsability Principle
+> A class should have only one reason to change
+[Wikipedia](https://en.wikipedia.org/wiki/Single-responsibility_principle)
+
+The `BusinessLogic` is responsible for determining how the log should be written:If there is a new state or a new rule, it will go inside.
+
+The `Controller` class is responssible fully handling the event.
+
+Functional does respect the single responsability principle.
+
+Also, nothing stops you from encapsulating the handling of the results of the `BusinessLogic` class into another class that contains the pattern matching,
+thus freeing the controller from that responsability.
+In that case the responsability of the controller would be: Orchestrating the components to update the log.
+
+### Open Close Principle
+> Software entities should be open for extension, but closed for modification
+[Wikipedia](https://en.wikipedia.org/wiki/Open–closed_principle)
+
+Discriminated unions do pose a challenge for extensibility, as adding a new type to the union will require modifying all functions that pattern match on that union.
+This seems to violate OCP as it stands.
+
+When a new type is added to a discriminated union, it's true that all the pattern matching code that handles the union will need to be revisited.
+This is a limitation of using discriminated unions, and it's a trade-off for the type safety and clarity they provide.
+
+Extending functionality might impact consumers, but this is not unique to functional programming.
+
+By isolating impure operations, you can change the core logic (pure functions) of your application without altering
+how it interacts with the outside world.
+
+In this exercise, adding a new line, updating an existing one and updating previous + adding a new one may be enough for future functuionality.
+Even if a new case is handlerd (a new state for example) it most likely can be extended in the pure method without affecting the controller.
+
+### Liskov Substitution Principle
