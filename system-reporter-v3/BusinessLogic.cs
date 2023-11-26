@@ -5,7 +5,7 @@ using OneOf;
 
 internal static class BusinessLogic
 {
-    // Pure function, does not edit parameters, returns discriminated union
+    // Pure function, does not edit parameters, uses pattern matching, returns discriminated union
     internal static OneOf<AddNew, UpdateLastEndTime, UpdateLastEndTimeAndAddNew> DetermineLogChanges(
         HardwareConnectionStateChangedEvent e,
         Disconnection? last) =>
