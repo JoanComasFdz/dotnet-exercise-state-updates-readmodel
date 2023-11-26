@@ -126,7 +126,19 @@ I replaced the custom implementation of DU by the tools available in OneOf.
 i can just return the `last` parameter as part of the result type when needed. Its `EndTime` can therefore be updated outseide in the switch
 and the changes will be made effective on `db.SaveChanges()`.
 - Overall is less code and more compact.
+- Unit testing can be improved, `IsT0` doesn't mean anything.
+- How would stack traces look like if an exceptin happens in any of the lambdas in the `Switch()` method?
 
+# Next: v2 with pattern matching
+After further learning, I can condense all the ifs into 3 pattern matching statements, to compare how it reads and feels compared to v2.
+
+## Conclusions, v3
+- It gets rid of any variable naming, transforming statements into expressions.
+- It needs some getting used to this way of writing code.
+- C# syntax to do pattern matching over a tuple may not be the best one.
+- In v2 I could have avoided writing variables, but I felt it would be easier to read and mantain; In v3 variable names aren't even possible,
+lines feel too long, but at the same time there is a lot going on on a few lines of code.
+- This feels truly different than anything I have donde before and closer to whatever functional code I see.
 
 # Next: High order functions
 The next follow-up is to invert the game: Replace discriminated unions by parameters of type `Actions<T>`, which will provide
@@ -157,13 +169,23 @@ I am going to count the files and lines of code to compare both approaches, so t
  - DisconnectionDBContext
  - Program
 
+ How am I counting lines?
+ - Lines **not** counted:
+   - usings
+   - namespaces
+   - blank lines
+
+  I am aware that the line comparison can be a bit tricky. For example i could write an if without curly braces and 
+  "save 2 lines", or put the if and the statement together in the same line. This is just not how I would code it.
+  All coding guidelines I have faced so far would not allow that.
+
 ### OOP
 Production code items:
-- ILogService => Not necessary, 1:1 interface, 4 lines
-- LogService => Not necessary, but facilitates testability, 33 lines.
+- ILogService => Not strictly necessary, 1:1 interface, 4 lines
+- LogService => Not strictly necessary, but facilitates testability, 27 lines.
 - IDisconnectionRepository => not necessary for prod, but for testing, 6 lines.
-- DisconnctionRepository => overkill with pass-through methods and less performant unless details are leaked, 22 lines.
- Total: 65 lines.
+- DisconnctionRepository => overkill with pass-through methods and less performant unless details are leaked, 22(28) lines.
+ Total: 59/65 lines.
 
 Code in controller:
 - MapPost() becomes a pass-through method, 1 line. Good if you fvor hexagonal architecture, doesn't reduce complexity otherwise.
@@ -175,16 +197,16 @@ Tests:
 - Second test requires additiinal 2 lines for repo setup.
 
 Total lines needed: 
-1. 1 (`MapPost()`) + 65 (items) + 13 (Test1) + 20 (Test2) = 99.
+1. 1 (`MapPost()`) + 59/65 (items) + 13 (Test1) + 20 (Test2) = 93(99).
 2. 22 (`MapPost()`) + 13 (Test1) + 20 (Test2) = 55.
 
-### Functional (v2)
+### Functional (v3)
 Production code items:
-- BusinessLogic => no way to ensure parameters are inmutable (for now), 23 lines
+- BusinessLogic => in parameters give some guardrails, but don't fully grant parameter inmutability, 12 lines
 - AddNew => very small "result" type, 4 lines
 - UpdateLastEndTime => very small "result" type, 5 lines
 - UpdateLastEndTimeAndAddNew => very small "result" type, 6 lines
-Total: 38 lines.
+Total: 27 lines.
 
 Code in controller:
 - MapPost() handles data persistency optimizing calls to `db.SaveChanges()`, doesn't fit hexagonal architecture, 12 lines.
@@ -195,20 +217,86 @@ Tests:
 - Second test => 16 lines.
 
 Total lines needed:
-11 (`MapPost()`) + 38 (items) + 10 (Test1) + 16 (Test2) = 75.
+11 (`MapPost()`) + 27 (items) + 10 (Test1) + 16 (Test2) = 64.
 
 
 ## TL;DR (when working with (small?) services)
 
 Traditional OOP:
 - Requires shallow classes and 1:1 interfaces that don't bring much value, they are there only to adhere to a particular architecture.
-- It can be underperformant unless one class leaks details to another, thus violating SOLID.
+- It can be underperformant unless one class leaks details to another, thus potentially violating SOLID, although some engineeres would say that it doesn't violate it and that this is exactly what the Repository is supposed to do.
 - There is a way to reduce that complexity, at the cost of having to write integration tests. This is not a big deal nowadays, but it feels wrong to bootstrap the whole service to test some functionality.
 
 Functional:
-- Requires an extra library for Discriminated Unions to work but it gets rid of shallow classes and 1:1 interfaces.
-- Requires 25% less code (99 to 75 lines) and none of the items are required by external factors (like testability).
-- Testing business logic does not require an extra library nor any setuo beyond what the method needs.
+- Requires an extra library for Discriminated Unions to work
+- It gets rid of shallow classes and 1:1 interfaces.
+- Requires 32%(35%) less code (93(99) to 64 lines) and none of the items are required by external factors (like testability).
+- Testing business logic does not require an extra library nor any setup beyond what the method needs.
 
-We need to talk about SOLID.
+---
 
+# We need to talk about SOLID.
+
+And before that, we need to talk about some hot takes:
+
+## 1st hot take: Controllers
+It is generally assumed that no logic should go in anything that is an interface to the outside world, like a controller receving HTTP calls,
+a subscription receiving events from a broker, console input, etc. In hexagonal architecture this are called Driving and Driven ports.
+
+The main argument is that the isolated functionality can then be plugged to any of ports and it's completely isolated from technolog and infrastructure.
+
+Is this really necessary for the most parts of the most apps?
+
+This is a very important question, necessary to reason about the next statement:
+
+**The general rule cannot be the one that covers the most extreme cases.**
+
+If a piece of code in a service needs to respond to both a Controller and a Subscription, that is an exception, NOT the general rule.
+
+Therefore, I consider that in most cases the drivers are responsible for the **full vertical implementation**.
+They should **not** simply be passthrough methods delegating everything into a 
+Servie class with a 1:1 interface that is only used by one given driver.
+
+And whenever a piece of functionality needs to be plugged to more than one place, I argue that the best apporach is to 
+place the full functionality into a shared library and use it in both places.
+
+Find a balance: Of course, if your Controller has 5 endpoints and all of them have plenty of code, then that can be considered an
+exception to the rule and an alternative can be implemented. I still would try to avoid putting everything away. Again, the most important
+part is to find a balance.
+
+TL;DR: I push for code to be in the controller.
+
+## 2nd hot take: Repositories
+Entity Framework is already an abstraction layer over your data persistence system. Looks like EF team considers the following:
+- They expect you to use it in the deepest layers of your application
+- They expect you to use a repository pattern with ypour LINQ queries.
+- They expect you to use the repository for unit testing purposes.
+- They expect you to use a real database for integration testing purposes.
+
+Source: https://github.com/dotnet/efcore/issues/16470
+
+It is also mentioned in that thread that DbContext is a Unit of Work implmenentation and that DBSet is a Repository implementation.
+
+Most repositories I have read are shallow classes with 1:1 interfaces, used only in 1 place. They are simply name wrappers around
+relatevely easy LINQ queries, meaning pass-through methods that bring almost no value. For complex queries, they are 
+implemented either directly SQL statements or stored procedures.
+
+I argue that any test on a Repository has practically no return of investment:
+- Either it tests that the Add method adds an entity to a DBContext: This is so trivial, it's a waste of everybodys time.
+- Or it verifies that an sql statement is... written correctly?
+
+Exception to the rule: I have done complex in-memory LINQ queries, which I truly needed unit tests for to fully understand. For this ones,
+I put them into a class, which in my case was called `XYZSorter`. I specifically avoided the word Repository, because it would
+have opened the door to other devs putting stuff inside that wasn't really ment to be there.
+
+If the only reasone why a Repository is used is to create tests without having to setup the DbContext, then I argue that
+a better approach is to follow the impure-pure-impure pattern, so that the actual functionality can be tested
+in isolation of the DbContext, and as a bonus, no mocking framework is needed.
+
+TL;DR: I favor directly using the DbContext versus Repositories in the upper layers of an application.
+If a query is complex, put that one in its own class with a more descriptive name than just `XYZRepository`.
+
+## Now: SOLID
+How does the functional approach (v3) adhere to the SOLID principles?
+
+// I'm workig on it
