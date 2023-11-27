@@ -68,11 +68,16 @@ So, step 2 return 2 cases:
 1. `UpdateLast` which carries the edited disconnection.
 1. `UpdateLastEndTimeAndAddNew`, which carries the update disconnection and the new disconnection instance.
 
-
 ## Technical details
 - I have disabled AoT because it just adds noise for this exercise.
 
-## My conclusions
+## oop: Traditional way
+I added the oop project to have a reference to compare to when implementing  the functional one.
+
+## v1: First attempt at a functional approach
+Here my goal is to isolate the business logic in a static, pure function, returning a discriminated union that I can switch over in the controller.
+
+## My conclusions, v1
 - I liked how the DetermineLogChanges ended up looking. It is quite self explanatory and clear. 
 Variable names may be unconventional but help understanding the why.
 - On the negative side, I wrote a comment before the last return because i realized it can be tricky
@@ -110,7 +115,7 @@ that it isn't necessary with the functional approach.
   that the test is documenting the behaviour of the SUT. And yet, it feels like forced duplication, almost policing: did the dev of this class
   create a new isntance withouth checking if it already exist?
 
-# Next: Use OneOf (v2)
+# v2: Use OneOf
 As of November 2023, [OneOf](https://github.com/mcintyre321/OneOf) is the default library to use when implementing discriminated unions.
 
 As a follow-up on the exercise, I have renamed the current system-reporter to system-reporter-v1 and created a v2 project, where
@@ -128,7 +133,7 @@ and the changes will be made effective on `db.SaveChanges()`.
 - Unit testing can be improved, `IsT0` doesn't mean anything.
 - How would stack traces look like if an exceptin happens in any of the lambdas in the `Switch()` method?
 
-# Next: v2 with pattern matching (v3)
+# v3: v2 with pattern matching
 After further learning, I can condense all the ifs into 3 pattern matching statements, to compare how it reads and feels compared to v2.
 
 ## Conclusions, v3
@@ -139,14 +144,14 @@ After further learning, I can condense all the ifs into 3 pattern matching state
 lines feel too long, but at the same time there is a lot going on on a few lines of code.
 - This feels truly different than anything I have donde before and closer to whatever functional code I see.
 
-# Next: High order functions
+# v4: High order functions
 The next follow-up is to invert the game: Replace discriminated unions by parameters of type `Actions<T>`, which will provide
 the necessary functionality to the pure function.
 
 This, in my opinion, implies changing the name of the function, since it no longer just determines something, but also calls
 the necessary labdas to make it happen.
 
-## Conclusions, v3
+## Conclusions, v4
 - It is na interesting exercise, but generates too many second-guesses.
 - Readability of the `LogChanges` is more ore less the same, but when using only Funcs and Actions, a lot of information about how to use
 the params is lost. Because of that I created the delegates with proper documentation. So the DU types are replaced by delegates.
@@ -178,7 +183,7 @@ I am going to count the files and lines of code to compare both approaches, so t
   "save 2 lines", or put the if and the statement together in the same line. This is just not how I would code it.
   All coding guidelines I have faced so far would not allow that.
 
-### OOP
+## OOP
 Production code items:
 - ILogService => Not strictly necessary, 1:1 interface, 4 lines
 - LogService => Not strictly necessary, but facilitates testability, 27 lines.
@@ -199,7 +204,7 @@ Total lines needed:
 1. 1 (`MapPost()`) + 59/65 (items) + 13 (Test1) + 20 (Test2) = 93(99).
 2. 22 (`MapPost()`) + 13 (Test1) + 20 (Test2) = 55.
 
-### Functional (v3)
+## Functional (v3)
 Production code items:
 - BusinessLogic => in parameters give some guardrails, but don't fully grant parameter inmutability, 12 lines
 - AddNew => very small "result" type, 4 lines
