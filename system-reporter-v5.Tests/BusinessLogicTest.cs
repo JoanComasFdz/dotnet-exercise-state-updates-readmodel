@@ -1,6 +1,6 @@
 using hardware_connetion_monitor;
 
-namespace system_reporter_v4.Tests;
+namespace system_reporter_v5.Tests;
 
 public class BusinessLogicTest
 {

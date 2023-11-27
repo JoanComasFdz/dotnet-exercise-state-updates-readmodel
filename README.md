@@ -144,14 +144,14 @@ After further learning, I can condense all the ifs into 3 pattern matching state
 lines feel too long, but at the same time there is a lot going on on a few lines of code.
 - This feels truly different than anything I have donde before and closer to whatever functional code I see.
 
-# v4: High order functions
+# v5: High order functions
 The next follow-up is to invert the game: Replace discriminated unions by parameters of type `Actions<T>`, which will provide
 the necessary functionality to the pure function.
 
 This, in my opinion, implies changing the name of the function, since it no longer just determines something, but also calls
 the necessary labdas to make it happen.
 
-## Conclusions, v4
+## Conclusions, v5
 - It is na interesting exercise, but generates too many second-guesses.
 - Readability of the `LogChanges` is more ore less the same, but when using only Funcs and Actions, a lot of information about how to use
 the params is lost. Because of that I created the delegates with proper documentation. So the DU types are replaced by delegates.

@@ -17,11 +17,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "system-reporter-v2.Tests", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "system-reporter-v3", "system-reporter-v3\system-reporter-v3.csproj", "{5EA732D2-6B29-4D74-B622-A337B2DDF224}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "system-reporter-v4", "system-reporter-v4\system-reporter-v4.csproj", "{4AC9B3C7-62DF-4BBE-9F68-3287D18530A1}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "system-reporter-v4.Tests", "system-reporter-v4.Tests\system-reporter-v4.Tests.csproj", "{B3FDFE2D-F30E-4480-AFB6-6CFE8C26313D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "system-reporter-v3.Tests", "system-reporter-v3.Tests\system-reporter-v3.Tests.csproj", "{E8F9FAF3-F6C7-45EC-A9A6-CCB9EB3F522F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "system-reporter-v5", "system-reporter-v5\system-reporter-v5.csproj", "{4AC9B3C7-62DF-4BBE-9F68-3287D18530A1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "system-reporter-v5.Tests", "system-reporter-v5.Tests\system-reporter-v5.Tests.csproj", "{B3FDFE2D-F30E-4480-AFB6-6CFE8C26313D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

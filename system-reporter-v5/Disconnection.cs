@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-namespace system_reporter_v4;
+namespace system_reporter_v5;
 
 public record Disconnection(string HardwareUnitId, HardwareConnectionState State, DateTime StartTime)
 {
