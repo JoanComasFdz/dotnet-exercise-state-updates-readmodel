@@ -143,6 +143,20 @@ After further learning, I can condense all the ifs into 3 pattern matching state
 - In v2 I could have avoided writing variables, but I felt it would be easier to read and mantain; In v3 variable names aren't even possible,
 lines feel too long, but at the same time there is a lot going on on a few lines of code.
 - This feels truly different than anything I have donde before and closer to whatever functional code I see.
+- Unit tests keep the same issue about `IsT0`.
+
+# v4: v3 with no custom types
+I want to try to implement it without the custom types, just returning a OneOf of several options.
+
+## Conclusions, v4
+- The `DetermineLogChanges` method looks neat, very compact, a lot going on in a few lines of code.
+- Lines have been reduced down to 11 from 12 (method) + 15 (return types) = 27, meaning 60% less code.
+- The readability of the method itself does not change much thanks to being able to name the properties of the tuples.
+- As a consumer, I think the user experience is decreased: To properly use this method, I think it requires XML documentation, explaingin what each 
+type in the OneOf represents or is for.
+- This begs the question: Is it better to have a longer class and helper types with no XML doc or a shorter class with no helper types with XML doc?
+Right now I am not sure.
+- Unit tests keep the same issue about `IsT0`.
 
 # v5: High order functions
 The next follow-up is to invert the game: Replace discriminated unions by parameters of type `Actions<T>`, which will provide
@@ -223,6 +237,8 @@ Tests:
 Total lines needed:
 11 (`MapPost()`) + 27 (items) + 10 (Test1) + 16 (Test2) = 64.
 
+**Note**: with v4 (in case I like it in the future), the lines would be:
+11 (`MapPost()`) + 11 (Items) + 10 (Test1) + 16 (Test2) = 48.
 
 ## TL;DR (when working with (small?) services)
 

@@ -7,8 +7,8 @@ internal static class BusinessLogic
 {
     // Pure function, does not edit parameters, uses pattern matching, returns discriminated union
     internal static OneOf<AddNew, UpdateLastEndTime, UpdateLastEndTimeAndAddNew> DetermineLogChanges(
-        HardwareConnectionStateChangedEvent e,
-        Disconnection? last) =>
+        in HardwareConnectionStateChangedEvent e,
+        in Disconnection? last) =>
         (last, e) switch
         {
             { last: null, e: _ } or { last.EndTime: not null, e: _ } => new AddNew(new Disconnection(e.HardwareUnitId, e.State, e.OccurredAt)),

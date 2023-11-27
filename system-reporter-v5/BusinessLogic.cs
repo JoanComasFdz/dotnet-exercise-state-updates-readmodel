@@ -7,7 +7,7 @@ internal static class BusinessLogic
     // Not Pure function anymore because it cannot xontrol that the lambdas won't have side effects.
     // does not edit parameters
     internal static void LogChanges(
-        HardwareConnectionStateChangedEvent e,
+        in HardwareConnectionStateChangedEvent e,
         GetLastDisconnectionByHardwareUnitIdFunc getLastDisconnectionByHardwareUnitId,
         AddNewAction addNew,
         UpdateLastEndTimeAction updateLastEndTime,
