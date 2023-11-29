@@ -2,6 +2,7 @@ namespace system_reporter_v3.Tests;
 
 using hardware_connetion_monitor;
 using system_reporter_v3;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 public class BusinessLogicTest
 {
@@ -12,7 +13,7 @@ public class BusinessLogicTest
         var expectedState = HardwareConnectionState.DISCONNECTED;
         var expectedStartTime = DateTime.Now;
         var e = new HardwareConnectionStateChangedEvent(expectedHardwarUnitId, expectedState, expectedStartTime);
-        
+
         var result = BusinessLogic.DetermineLogChanges(e, null);
 
         Assert.True(result.IsT0);
@@ -39,10 +40,16 @@ public class BusinessLogicTest
 
         var result = BusinessLogic.DetermineLogChanges(e, last);
 
-        Assert.True(result.IsT0);
-        Assert.Equal(expectedHardwarUnitId, result.AsT0.Instance.HardwareUnitId);
-        Assert.Equal(expectedState, result.AsT0.Instance.State);
-        Assert.Equal(expectedStartTime, result.AsT0.Instance.StartTime);
-        Assert.Null(result.AsT0.Instance.EndTime);
+        result.Switch(
+            addNew =>
+            {
+                Assert.Equal(expectedHardwarUnitId, addNew.Instance.HardwareUnitId);
+                Assert.Equal(expectedState, addNew.Instance.State);
+                Assert.Equal(expectedStartTime, addNew.Instance.StartTime);
+                Assert.Null(addNew.Instance.EndTime);
+            },
+            x => Assert.Fail($"Returned {x} instead of {nameof(BusinessLogic.AddNew)}"),
+            x => Assert.Fail($"Returned {x} instead of {nameof(BusinessLogic.AddNew)}")
+            );
     }
 }

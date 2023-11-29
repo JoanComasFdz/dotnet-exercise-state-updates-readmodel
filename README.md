@@ -130,7 +130,7 @@ I replaced the custom implementation of DU by the tools available in OneOf.
 i can just return the `last` parameter as part of the result type when needed. Its `EndTime` can therefore be updated outseide in the switch
 and the changes will be made effective on `db.SaveChanges()`.
 - Overall is less code and more compact.
-- Unit testing can be improved, `IsT0` doesn't mean anything.
+- Unit testing can be improved, `IsT0` doesn't mean anything, I could use the switch methof there as well.
 - How would stack traces look like if an exceptin happens in any of the lambdas in the `Switch()` method?
 
 # v3: v2 with pattern matching
@@ -143,7 +143,7 @@ After further learning, I can condense all the ifs into 3 pattern matching state
 - In v2 I could have avoided writing variables, but I felt it would be easier to read and mantain; In v3 variable names aren't even possible,
 lines feel too long, but at the same time there is a lot going on on a few lines of code.
 - This feels truly different than anything I have donde before and closer to whatever functional code I see.
-- Unit tests keep the same issue about `IsT0`.
+- Unit tests keep the same issue about `IsT0`. But I changed one of the unit tests to get a feeling of how would it lookt like with the switch.
 
 # v4: v3 with no custom types
 I want to try to implement it without the custom types, just returning a OneOf of several options.
