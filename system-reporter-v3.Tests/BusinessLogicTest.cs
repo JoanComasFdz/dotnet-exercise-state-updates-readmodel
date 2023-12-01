@@ -16,11 +16,12 @@ public class BusinessLogicTest
 
         var result = BusinessLogic.DetermineLogChanges(e, null);
 
-        Assert.True(result.IsT0);
-        Assert.Equal(expectedHardwarUnitId, result.AsT0.Instance.HardwareUnitId);
-        Assert.Equal(expectedState, result.AsT0.Instance.State);
-        Assert.Equal(expectedStartTime, result.AsT0.Instance.StartTime);
-        Assert.Null(result.AsT0.Instance.EndTime);
+        Assert.Equal(typeof(BusinessLogic.AddNew), result.Value.GetType());
+        var addNew = result.AsT0;
+        Assert.Equal(expectedHardwarUnitId, addNew.Instance.HardwareUnitId);
+        Assert.Equal(expectedState, addNew.Instance.State);
+        Assert.Equal(expectedStartTime, addNew.Instance.StartTime);
+        Assert.Null(addNew.Instance.EndTime);
     }
 
     [Fact]
@@ -39,7 +40,6 @@ public class BusinessLogicTest
         };
 
         var result = BusinessLogic.DetermineLogChanges(e, last);
-
         result.Switch(
             addNew =>
             {
