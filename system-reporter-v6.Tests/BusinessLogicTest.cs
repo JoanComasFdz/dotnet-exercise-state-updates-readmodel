@@ -29,7 +29,10 @@ public class BusinessLogicTest
 
         // Alternative, do not count as lines
         var expectedDisconnection = new Disconnection(expectedHardwarUnitId, expectedState, expectedStartTime);
-        Assert.Equal(expectedDisconnection, result.UnwrapAddNew().NewDisconnection);
+        result.MatchAddNew(
+            addNew => Assert.Equal(expectedDisconnection, addNew.NewDisconnection),
+            () => Assert.Fail($"Expected 'AddNew' but result is '{result.GetType().Name}")
+            );
     }
 
     [Fact]
@@ -59,5 +62,9 @@ public class BusinessLogicTest
             },
             () => Assert.Fail($"Expected 'AddNew' but result is '{result.GetType().Name}")
             );
+
+        // Alternative, do not count as lines
+        var expectedDisconnection = new Disconnection(expectedHardwarUnitId, expectedState, expectedStartTime);
+        Assert.Equal(expectedDisconnection, result.UnwrapAddNew().NewDisconnection);
     }
 }
