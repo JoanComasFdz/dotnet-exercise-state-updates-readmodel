@@ -65,5 +65,11 @@ public class BusinessLogicTest
         // Alternative, do not count as lines
         var expectedDisconnection = new Disconnection(expectedHardwarUnitId, expectedState, expectedStartTime);
         Assert.Equal(expectedDisconnection, result.UnwrapAddNew().NewDisconnection);
+
+        // Alternative, do not count as lines
+        var addNew = result as LogChange.AddNew;
+        Assert.IsType<LogChange.AddNew>(addNew);
+        Assert.Equal(expectedDisconnection, addNew.NewDisconnection);
+
     }
 }
